@@ -247,7 +247,7 @@ def stage_git(ctx, args, assets):
 
     print("\n== 2/6 tag ==")
     head = sh("git rev-parse HEAD")
-    existing = sh(f"git rev-parse -q --verify refs/tags/{ctx['version']}", check=False)
+    existing = sh(f'git rev-parse -q --verify "refs/tags/{ctx["version"]}^{{commit}}"', check=False)
     if existing:
         if existing != head:
             fail(f"tag {ctx['version']} 已存在且指向 {existing[:8]}，与 HEAD {head[:8]} 不同",
