@@ -58,7 +58,6 @@
 ```
 cyberpunk-homepage/            ← 仓库根
 ├── README.md
-├── release.py                 # 一键发版（双推 + 双 Release）
 └── cyberpunk-homepage/        # 站点本体
     ├── index.html             # 构建产物（线上跑的就是它，约 66 KB）
     ├── src/
@@ -108,26 +107,6 @@ npx html-minifier-terser \
   --remove-attribute-quotes --remove-redundant-attributes \
   src/index.source.html -o index.html
 ```
-
-## 发版
-
-`release.py` 把七步压成一条命令：建 tag → Gitee 先推 → GitHub 后推 → 双平台 Release → 上传附件 → 回读校验两端 tag。
-
-```bash
-export GITEE_TOKEN=...   # 私人令牌，scope=projects
-export GITHUB_TOKEN=...  # PAT，scope=repo
-
-python3 release.py v1.0.1 \
-  -m "feat: 高塔晚风文案微调" \
-  -t "夜之城个人终端 v1.0.1" \
-  -n release-notes.md \
-  -a dist/cyberpunk-terminal-v1.0.1.zip
-```
-
-- `--dry-run` 只打印计划，`--no-release` 只推 git 不打 Release
-- tag 已存在则跳过创建，可安全重跑（幂等）
-- token 未设置时自动从 `~/.git-credentials` 读取；任一平台失败立即中止并打印补救命令
-- 网络注意：Gitee 强制直连（国内走代理更慢），GitHub 走环境变量里的代理
 
 ## 性能账本
 
