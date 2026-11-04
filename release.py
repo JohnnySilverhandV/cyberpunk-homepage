@@ -30,8 +30,10 @@ import glob
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
+import tempfile
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -45,6 +47,13 @@ UA = "release.py/1.0"
 
 # ---------------------------------------------------------------- 基础工具
 
+def redact(text):
+    """把 token / 密码从任何待打印的字符串里抹掉。日志是会被翻出来的。"""
+    text = re.sub(r"(ghp_|github_pat_)[A-Za-z0-9_]+", r"\1***", text)
+    text = re.sub(r"(https?://[^:/@]+:)[^@]+(@)", r"\1***\2", text)
+    return text
+
+
 def sh(cmd, check=True, capture=True, env=None):
     """跑一条命令。失败时把 stderr 原样抛出来，不吞错误。"""
     full_env = dict(os.environ)
@@ -54,17 +63,17 @@ def sh(cmd, check=True, capture=True, env=None):
                        capture_output=capture, env=full_env)
     if check and r.returncode != 0:
         out = ((r.stdout or "") + (r.stderr or "")).strip()
-        fail(f"命令失败: {cmd}\n{out}")
+        fail(f"命令失败: {redact(cmd)}\n{redact(out)}")
     return (r.stdout or "").strip()
 
 
 def run_echo(cmd, env=None):
-    print(f"  $ {cmd}")
+    print(f"  $ {redact(cmd)}")
     return sh(cmd, env=env)
 
 
 def fail(msg, hint=None):
-    print(f"\n[失败] {msg}", file=sys.stderr)
+    print(f"\n[失败] {redact(msg)}", file=sys.stderr)
     if hint:
         print(f"[补救] {hint}", file=sys.stderr)
     sys.exit(1)
@@ -74,17 +83,38 @@ def ok(msg):
     print(f"[ok] {msg}")
 
 
-def load_credential(host):
-    """从 ~/.git-credentials 取 (user, secret)。没有就返回 (None, None)。"""
+def read_credentials(host):
+    """从 ~/.git-credentials 取该域名下所有 (user, secret)。"""
     path = os.path.expanduser("~/.git-credentials")
     if not os.path.exists(path):
-        return None, None
+        return []
+    out = []
     for line in open(path, encoding="utf-8"):
         m = re.match(r"https?://([^:@]+):(.*)@(.+)$", line.strip())
         if m and m.group(3).lower().endswith(host):
-            user = urllib.parse.unquote(m.group(1))
-            return user, m.group(2)
-    return None, None
+            out.append((urllib.parse.unquote(m.group(1)), m.group(2)))
+    return out
+
+
+def looks_like_token(secret):
+    return bool(secret) and (secret.startswith(("ghp_", "github_pat_")) or re.fullmatch(r"[0-9a-f]{32}", secret))
+
+
+def best_secret(host, prefer_user=None):
+    """优先拿令牌，其次才退化成密码。旧账号的密码常常排在同一域名的第一条。"""
+    creds = read_credentials(host)
+    if prefer_user:
+        for u, s in creds:
+            if u == prefer_user and looks_like_token(s):
+                return s
+    for _, s in creds:
+        if looks_like_token(s):
+            return s
+    if prefer_user:
+        for u, s in creds:
+            if u == prefer_user:
+                return s
+    return creds[0][1] if creds else None
 
 
 def parse_remote(url):
@@ -152,21 +182,22 @@ def build_context(args):
     if not (g_owner and h_owner):
         fail("没解析出远端仓库地址", "检查 git remote -v")
 
-    gitee_token = os.environ.get("GITEE_TOKEN") or load_credential("gitee.com")[1]
-    github_token = os.environ.get("GITHUB_TOKEN") or load_credential("github.com")[1]
+    gitee_token = os.environ.get("GITEE_TOKEN") or best_secret("gitee.com", g_owner)
+    github_token = os.environ.get("GITHUB_TOKEN") or best_secret("github.com", h_owner)
     if not gitee_token:
         fail("缺少 GITEE_TOKEN", "export GITEE_TOKEN=<私人令牌，scope=projects>")
     if not github_token:
         fail("缺少 GITHUB_TOKEN", "export GITHUB_TOKEN=<PAT，scope=repo>")
-
-    # git 推送的 URL 里带用户名，才能命中凭据库里正确的那个账号
-    gitee_push = f"https://{g_owner}:{urllib.parse.quote(gitee_token, safe='')}@gitee.com/{g_owner}/{g_repo}.git"
-    github_push = f"https://{h_owner}:{urllib.parse.quote(github_token, safe='')}@github.com/{h_owner}/{h_repo}.git"
+    if not looks_like_token(gitee_token):
+        fail("Gitee 侧拿到的是账号密码而不是私人令牌，API 会 401",
+             "export GITEE_TOKEN=<私人令牌>，或把令牌写进 ~/.git-credentials 的 johnny-silver-hand123 那条")
 
     return {
         "root": root, "version": version,
-        "gitee": {"owner": g_owner, "repo": g_repo, "url": gitee_url, "push": gitee_push, "token": gitee_token},
-        "github": {"owner": h_owner, "repo": h_repo, "url": github_url, "push": github_push, "token": github_token},
+        "gitee": {"owner": g_owner, "repo": g_repo, "url": gitee_url,
+                  "user": g_owner, "token": gitee_token},
+        "github": {"owner": h_owner, "repo": h_repo, "url": github_url,
+                   "user": h_owner, "token": github_token},
         "title": args.title or f"{os.path.basename(root)} {version}",
     }
 
@@ -228,20 +259,36 @@ def stage_git(ctx, args, assets):
     return head
 
 
+def push_with_secret(url, refs, user, secret, env=None):
+    """用一次性凭据文件推送：令牌不进命令行、不进进程表、不进终端日志。"""
+    tmpdir = tempfile.mkdtemp(prefix="releasepy-")
+    cred = os.path.join(tmpdir, "cred")
+    host = url.split("//", 1)[1].split("/", 1)[0]
+    with open(cred, "w", encoding="utf-8") as f:
+        f.write(f"https://{urllib.parse.quote(user, safe='')}:{urllib.parse.quote(secret, safe='')}@{host}\n")
+    os.chmod(cred, 0o600)
+    try:
+        return run_echo(f'git -c credential.helper="store --file={cred}" push {url} {refs}', env=env)
+    finally:
+        shutil.rmtree(tmpdir, ignore_errors=True)
+
+
 def stage_push(ctx, args):
     print("\n== 3/6 推送（Gitee 先，GitHub 后）==")
     branch = sh("git rev-parse --abbrev-ref HEAD")
+    g, h = ctx["gitee"], ctx["github"]
+
     # Gitee 强制直连：国内走代理更慢，且代理常对 Gitee 报 502
-    run_echo(f'git push {ctx["gitee"]["push"]} {branch} {ctx["version"]}',
-             env={"no_proxy": "gitee.com", "NO_PROXY": "gitee.com"})
+    push_with_secret(g["url"], f"{branch} {ctx['version']}", g["user"], g["token"],
+                     env={"no_proxy": "gitee.com", "NO_PROXY": "gitee.com"})
     ok("Gitee 推送完成")
 
-    code, _ = http("GET", f"{GITHUB_API}/repos/{ctx['github']['owner']}/{ctx['github']['repo']}",
-                   headers={"Authorization": f"Bearer {ctx['github']['token']}"})
+    code, _ = http("GET", f"{GITHUB_API}/repos/{h['owner']}/{h['repo']}",
+                   headers={"Authorization": f"Bearer {h['token']}"})
     if code != 200:
         fail(f"GitHub 不可达（HTTP {code}），Gitee 已完成，属于「半推」状态",
              f"网络恢复后重跑：python3 release.py {ctx['version']} -m '...' （幂等，不会重复打 tag）")
-    run_echo(f'git push {ctx["github"]["push"]} {branch} {ctx["version"]}')
+    push_with_secret(h["url"], f"{branch} {ctx['version']}", h["user"], h["token"])
     ok("GitHub 推送完成")
 
 
@@ -341,9 +388,9 @@ def stage_verify(ctx, assets):
 
     # ① 两端 tag SHA 一致
     local = sh("git rev-parse HEAD")
-    g_tag = sh(f'no_proxy=gitee.com git ls-remote {g["push"]} refs/tags/{ctx["version"]} '
+    g_tag = sh(f'no_proxy=gitee.com git ls-remote {g["url"]} refs/tags/{ctx["version"]} '
                f'refs/tags/{ctx["version"]}^{{}}', check=False)
-    h_tag = sh(f'git ls-remote {h["push"]} refs/tags/{ctx["version"]} refs/tags/{ctx["version"]}^{{}}', check=False)
+    h_tag = sh(f'git ls-remote {h["url"]} refs/tags/{ctx["version"]} refs/tags/{ctx["version"]}^{{}}', check=False)
     for label, out in (("Gitee", g_tag), ("GitHub", h_tag)):
         sha = (out.split()[0] if out else "")
         if not sha:
