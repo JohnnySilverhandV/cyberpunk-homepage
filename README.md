@@ -14,7 +14,7 @@
 
 <br>
 
-[线上终端](https://cyberpunk-terminal.app.workbuddy.host/) ｜ [GitHub](https://github.com/JohnnySilverhandV/cyberpunk-homepage) ｜ [Gitee](https://gitee.com/johnny-silver-hand123/cyberpunk-homepage) ｜ [技术复盘](notes/cyberpunk-homepage-tech-notes.md)
+[线上终端](https://cyberpunk-terminal.app.workbuddy.host/) ｜ [GitHub](https://github.com/JohnnySilverhandV/cyberpunk-homepage) ｜ [Gitee](https://gitee.com/johnny-silver-hand123/cyberpunk-homepage)
 
 </div>
 
@@ -31,7 +31,6 @@
 | 线上终端 | https://cyberpunk-terminal.app.workbuddy.host/ |
 | GitHub | https://github.com/JohnnySilverhandV/cyberpunk-homepage |
 | Gitee（国内镜像） | https://gitee.com/johnny-silver-hand123/cyberpunk-homepage |
-| 技术复盘（Markdown / HTML） | [`notes/`](notes/) |
 
 ## 七个区块
 
@@ -60,7 +59,6 @@
 cyberpunk-homepage/            ← 仓库根
 ├── README.md
 ├── release.py                 # 一键发版（双推 + 双 Release）
-├── notes/                     # 技术复盘（HTML + Markdown 双版本）
 └── cyberpunk-homepage/        # 站点本体
     ├── index.html             # 构建产物（线上跑的就是它，约 66 KB）
     ├── src/
@@ -153,8 +151,6 @@ python3 release.py v1.0.1 \
 | 视频探测 | 黑名单而非白名单：只有 404/410 才锁住「接入回放」，405/异常/`file:` 一律放行 |
 | 视差首图 | `scale(1.06)` 做 overscan，覆盖率必须大于最大位移，否则边角露白 |
 
-完整的 10 章复盘在 [`notes/cyberpunk-homepage-tech-notes.md`](notes/cyberpunk-homepage-tech-notes.md)，HTML 排版版在[这里](notes/cyberpunk-homepage-tech-notes.html)。
-
 ## 版本记录
 
 ### v1.0.0 — 2026-11-04
@@ -165,7 +161,6 @@ python3 release.py v1.0.1 \
 - 六段超梦回放：原生 `<video>` + 自绘 HUD，真实 `ended` 驱动结束投影特效
 - 媒体压缩：全站 99 MiB → 20 MiB（视频 −79.2%）
 - 源码/产物分离 + 构建脚本，线上产物与仓库字节一致
-- 技术复盘笔记 HTML + Markdown 双版本
 
 ## 声明
 
