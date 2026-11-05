@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="cyberpunk-homepage/assets/hero-city.jpg" alt="NIGHT CITY / 夜之城" width="100%">
+<img src="assets/hero-city.jpg" alt="NIGHT CITY / 夜之城" width="100%">
 
 <br>
 
@@ -56,23 +56,23 @@
 ## 目录结构
 
 ```
-cyberpunk-homepage/            ← 仓库根
+cyberpunk-homepage/            ← 仓库根 = 站点根
 ├── README.md
-└── cyberpunk-homepage/        # 站点本体
-    ├── index.html             # 构建产物（线上跑的就是它，约 66 KB）
-    ├── src/
-    │   └── index.source.html  # 可读源码（1359 行，改这里）
-    └── assets/
-        ├── bd-quickhack.mp4   # 4.1 MB  快速黑客
-        ├── bd-cyberware.mp4   # 3.1 MB  义体改造
-        ├── bd-frontend.mp4    # 6.0 MB  前端工程
-        ├── bd-badlands.mp4    # 3.1 MB  恶土见闻
-        ├── bd-tower.mp4       # 2.1 MB  高塔晚风
-        ├── bd-afterlife.mp4   # 2.1 MB  来世酒吧
-        ├── hero-city.jpg      # 915 KB  视差首图
-        ├── portrait.jpg       # 209 KB  肖像
-        ├── cyberware-arm.jpg  # 419 KB  义体
-        └── favicon.svg        # 242 B
+├── LICENSE
+├── index.html                 # 构建产物（线上跑的就是它，约 66 KB）
+├── src/
+│   └── index.source.html      # 可读源码（1359 行，改这里）
+└── assets/
+    ├── bd-quickhack.mp4   # 4.1 MB  快速黑客
+    ├── bd-cyberware.mp4   # 3.1 MB  义体改造
+    ├── bd-frontend.mp4    # 6.0 MB  前端工程
+    ├── bd-badlands.mp4    # 3.1 MB  恶土见闻
+    ├── bd-tower.mp4       # 2.1 MB  高塔晚风
+    ├── bd-afterlife.mp4   # 2.1 MB  来世酒吧
+    ├── hero-city.jpg      # 915 KB  视差首图
+    ├── portrait.jpg       # 209 KB  肖像
+    ├── cyberware-arm.jpg  # 419 KB  义体
+    └── favicon.svg        # 242 B
 ```
 
 > **改哪一份**：改文案、换视频请改 `src/index.source.html`，再跑构建生成 `index.html`。
@@ -83,8 +83,6 @@ cyberpunk-homepage/            ← 仓库根
 零依赖，不需要 `npm install`：
 
 ```bash
-cd cyberpunk-homepage
-
 # 方式一：直接双击 index.html（file:// 下视频探测会自动放行）
 open index.html
 
@@ -100,7 +98,6 @@ python3 -m http.server 8000
 源码 1359 行、产物压缩后体积约 −17%。构建依赖 `html-minifier-terser` 与 `clean-css`（CSS 只走 level 1，level 2 会重排规则顺序、有层叠错乱风险）：
 
 ```bash
-cd cyberpunk-homepage
 npx html-minifier-terser \
   --collapse-whitespace --remove-comments \
   --minify-css true --minify-js true \
