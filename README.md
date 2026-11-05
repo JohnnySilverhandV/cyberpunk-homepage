@@ -14,11 +14,15 @@
 
 <br>
 
-[线上终端](https://cyberpunk-terminal.app.workbuddy.host/) ｜ [GitHub](https://github.com/JohnnySilverhandV/cyberpunk-homepage) ｜ [Gitee](https://gitee.com/johnny-silver-hand123/cyberpunk-homepage)
+[线上终端](https://cyberpunk-terminal.app.workbuddy.host/) ｜ [GitHub Pages](https://johnnysilverhandv.github.io/cyberpunk-homepage/)
 
 </div>
 
 ---
+
+> 🖥️ **线上终端（国内直连）**：<https://cyberpunk-terminal.app.workbuddy.host/>
+>
+> 🌐 **GitHub Pages**：<https://johnnysilverhandv.github.io/cyberpunk-homepage/>
 
 ## 这是什么
 
@@ -26,9 +30,10 @@
 
 页面不是"套模板加霓虹"，而是把 CP2077 的界面语言拆成可复用的部件：RGB 色差故障字、CRT 扫描带、会跳动的胶片噪点、鼠标视差首图、全息投影播放器。全部手写，没有一张 UI 贴图。
 
-| 入口 | 地址 |
+## 源码仓库
+
+| 平台 | 地址 |
 |---|---|
-| 线上终端 | https://cyberpunk-terminal.app.workbuddy.host/ |
 | GitHub | https://github.com/JohnnySilverhandV/cyberpunk-homepage |
 | Gitee（国内镜像） | https://gitee.com/johnny-silver-hand123/cyberpunk-homepage |
 
