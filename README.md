@@ -1,28 +1,21 @@
-<div align="center">
+# cyberpunk-homepage · 夜之城个人终端
 
-<img src="assets/hero-city.jpg" alt="NIGHT CITY / 夜之城" width="100%">
+一个**多页面、一屏锁定、零依赖**的赛博朋克 2077 风格个人主页：义体档案、专长树、六段超梦全息回放，外加一个能敲命令的假终端。
 
-<br>
-
-# 瑞哥 . 夜之城个人终端
-
-**NIGHT CITY PERSONAL TERMINAL**
-
-多页面静态站 · 一屏锁定（无滚动条）· 零框架 · 零运行时依赖 · 6 段超梦回放 · 20 MiB
-
-<sub>WAKE UP, SAMURAI. 我们有一座城市要烧。</sub>
-
-<br>
-
-[线上终端](https://cyberpunk-terminal-20282.app.workbuddy.host/?sharecode=GWQKPIXTQB) ｜ [GitHub Pages](https://johnnysilverhandv.github.io/cyberpunk-homepage/)
-
-</div>
-
----
-
-> 🖥️ **线上终端（国内直连）**：<https://cyberpunk-terminal-20282.app.workbuddy.host/?sharecode=GWQKPIXTQB>
+> 🎮 **在线直接玩（国内直连）**：<https://cyberpunk-terminal-20282.app.workbuddy.host/?sharecode=GWQKPIXTQB>
 >
 > 🌐 **GitHub Pages**：<https://johnnysilverhandv.github.io/cyberpunk-homepage/>
+>
+> 📦 **离线版下载**：[GitHub Releases](https://github.com/JohnnySilverhandV/cyberpunk-homepage/releases) ｜ [码云 Releases](https://gitee.com/johnny-silver-hand123/cyberpunk-homepage/releases)
+
+## 源码仓库
+
+| 平台 | 地址 |
+|---|---|
+| GitHub | https://github.com/JohnnySilverhandV/cyberpunk-homepage |
+| Gitee（国内直连） | https://gitee.com/johnny-silver-hand123/cyberpunk-homepage |
+
+---
 
 ## 这是什么
 
@@ -33,13 +26,6 @@
 ## 一屏锁定（ONE-SCREEN）
 
 桌面端 `body` 是 100% 高的 flex 容器、`overflow:hidden`，`main` 用 flex 自动把「内容区 + 薄页脚」填满剩余视口——任何常见视口（1920×1080 / 1600×900 / 1366×768 / 1280×720 均实测）都不溢出、不少页脚。字号与间距全部 `clamp()` 随视口缩放；首页入口卡与超梦元信息在矮视口自动降级隐藏，手机（≤760px 宽）回退为常规可滚动布局，保证可用性。
-
-## 源码仓库
-
-| 平台 | 地址 |
-|---|---|
-| GitHub | https://github.com/JohnnySilverhandV/cyberpunk-homepage |
-| Gitee（国内镜像） | https://gitee.com/johnny-silver-hand123/cyberpunk-homepage |
 
 ## 页面结构
 
