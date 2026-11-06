@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>接入终端 · 夜之城个人终端</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<meta name="description" content="脑内电台语录墙 + 一个能敲命令的假终端 —— 输入 help 查看可用指令。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet"></noscript>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<!-- 特效层 -->
+<div class="fx-scanlines"></div>
+<div class="fx-crtbar"></div>
+<div class="fx-noise"></div>
+<div class="fx-vignette"></div>
+<div id="cursor-glow"></div>
+<div id="burn-overlay"></div>
+<div class="side-strip">NIGHT CITY // NC-77012 // PERSONAL TERMINAL OF V.</div>
+<div class="hud-corner tl"></div><div class="hud-corner tr"></div>
+<div class="hud-corner bl"></div><div class="hud-corner br"></div>
+<div id="relic-hud">RELIC 2.0 :: RUNTIME STABLE</div>
+
+<!-- ===================== 导航 ===================== -->
+<header id="nav">
+  <a class="nav-logo" href="index.html"><span class="box">V</span>瑞哥. TERMINAL</a>
+  <nav class="nav-links" id="nav-links">
+    <a href="attributes.html">属性</a>
+    <a href="cyberware.html">义体</a>
+    <a href="perks.html">专长</a>
+    <a href="braindance.html">超梦档案</a>
+    <a href="terminal.html" class="active">接入终端</a>
+    <a class="ext" href="https://project-dashboard-demo.app.workbuddy.host/?sharecode=5I4RS6HMRS&shareId=46b3ce8f7da348518862b93cd07c467c" target="_blank" rel="noopener">项目控制台</a>
+  </nav>
+  <div class="nav-eddies">€$ <b id="eddies">0</b></div>
+  <button id="nav-burger">MENU_</button>
+</header>
+
+<main>
+<!-- ===================== 双栏：脑内电台 | 接入终端 ===================== -->
+<div class="tsplit">
+
+  <section id="quotes">
+    <div class="quote-stage reveal corner-brackets">
+      <div id="quote-text"></div>
+      <div id="quote-author"></div>
+      <div class="quote-nav" id="quote-nav"></div>
+    </div>
+    <div class="page-head" style="padding-left:0;padding-top:10px">
+      <div class="sec-tag">// 05. TRANSMISSIONS :: 脑内电台</div>
+    </div>
+  </section>
+
+  <section id="terminal" style="display:flex;flex-direction:column">
+    <div class="term reveal">
+      <div class="term-head"><i></i><i></i><i></i><span>V-TERM // nc.net.secure.uplink — bash</span></div>
+      <div class="term-body" id="term-body"></div>
+      <div class="term-input">
+        <span class="prompt">v@nightcity:~$</span>
+        <input id="term-input" type="text" autocomplete="off" spellcheck="false" placeholder="输入指令，例如 help ...">
+      </div>
+    </div>
+    <div class="page-head" style="padding-left:0;padding-top:10px">
+      <div class="sec-tag">// 06. UPLINK :: 跟我建立连接 — 敲 <b style="color:var(--yellow)">help</b> 查看指令 · <b style="color:var(--yellow)">contact</b> 找我做事</div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ===================== 页脚薄条 ===================== -->
+<footer class="foot-bar">
+  <div class="corps">
+    <span class="corp">荒坂 ARASAKA</span>
+    <span class="corp">军用科技 MILITECH</span>
+    <span class="corp">生物技术 BIOTECHNICA</span>
+    <span class="corp">康陶 KANG TAO</span>
+    <span class="corp">创伤小组 TRAUMA TEAM</span>
+  </div>
+  <div class="ncpd-line">NCPD: 本终端为个人非商业用途 · 未经授权接入将触发防御网格 · ICE 已就绪</div>
+  <div class="foot-status">V. TERMINAL © 2077 · <span class="on">● ONLINE</span></div>
+</footer>
+</main>
+
+<script src="assets/config.js"></script>
+<script src="assets/common.js"></script>
+<script>
+/* ============================================================
+   语录轮播
+   ============================================================ */
+(function(){
+  const textEl = document.getElementById('quote-text');
+  const authorEl = document.getElementById('quote-author');
+  const nav = document.getElementById('quote-nav');
+  let idx = 0, timer;
+  nav.innerHTML = CONFIG.quotes.map(()=>'<button class="q-dot" aria-label="切换语录"></button>').join('');
+  const dots = [...nav.children];
+  function show(i){
+    idx = i;
+    textEl.style.opacity = 0; authorEl.style.opacity = 0;
+    setTimeout(()=>{
+      textEl.textContent = CONFIG.quotes[i].t;
+      authorEl.textContent = CONFIG.quotes[i].a;
+      textEl.style.transition = authorEl.style.transition = 'opacity .6s';
+      textEl.style.opacity = 1; authorEl.style.opacity = 1;
+    }, 260);
+    dots.forEach((d,j)=>d.classList.toggle('on', j===i));
+  }
+  dots.forEach((d,i)=> d.onclick = ()=>{ show(i); reset(); });
+  const reset = ()=>{ clearInterval(timer); timer = setInterval(()=> show((idx+1)%CONFIG.quotes.length), 6000); };
+  show(0); reset();
+})();
+
+/* ============================================================
+   终端
+   ============================================================ */
+(function(){
+  const body = document.getElementById('term-body');
+  const input = document.getElementById('term-input');
+  const print = (html, cls='') => {
+    const d = document.createElement('div');
+    d.className = 't-line ' + cls;
+    d.innerHTML = html;
+    body.appendChild(d);
+    body.scrollTop = body.scrollHeight;
+  };
+  print("V-TERM v2.0.77 — 安全上行链路已建立", "t-sys");
+  print("输入 <span class='t-cmd'>help</span> 查看可用指令。", "t-dim");
+  print("&nbsp;");
+
+  const commands = {
+    help(){
+      print("可用指令:", "t-sys");
+      [
+        ["whoami","我是谁"],
+        ["skills","技术栈与专长"],
+        ["contact","联系方式"],
+        ["console","打开项目控制台"],
+        ["quotes","随机播放一条夜之城语录"],
+        ["eddies","查余额"],
+        ["burn","？？？"],
+        ["clear","清屏"]
+      ].forEach(([c,d])=> print(`  <span class="t-cmd">${c.padEnd(10)}</span> <span class="t-dim">${d}</span>`));
+    },
+    whoami(){
+      print(`代号: <span class="t-cmd">${CONFIG.handle}</span> // 全栈网络浪人`, "t-sys");
+      print("职业: 写代码 / 拆防火墙 / 恶土写生", "t-dim");
+      print("据点: 夜之城 · 沃森区", "t-dim");
+      print("现状: 接受委托中 —— 包括但不限于网站、义体调校与给荒坂找麻烦。", "t-dim");
+    },
+    skills(){
+      print("LANGS    > C++ / Java / Python / 易语言", "t-sys");
+      print("FRONT    > React / Vue / Angular / Flutter", "t-sys");
+      print("BACK     > Workbuddy / Codex / DeepSeek / 豆包", "t-sys");
+      print("CHROME   > Html / Css / JavaScript / TypeScript", "t-sys");
+    },
+    contact(){
+      print("建立安全信道成功:", "t-ok");
+      Object.entries(CONFIG.contact).forEach(([k,v])=> print(`  <span class="t-cmd">${k.padEnd(14)}</span> ${v}`));
+      print("提示: 白天回复较慢 —— 通常在恶土或者睡着。", "t-dim");
+    },
+    console(){
+      print("跳转至项目控制台（独立应用，新标签页）...", "t-ok");
+      print(`  <span class="t-cmd">${CONFIG.dashboardUrl}</span>`, "t-dim");
+      setTimeout(()=> window.open(CONFIG.dashboardUrl, '_blank', 'noopener'), 600);
+    },
+    quotes(){
+      const q = CONFIG.quotes[Math.floor(Math.random()*CONFIG.quotes.length)];
+      print(`"${q.t}"`, "t-cmd");
+      print(`—— ${q.a}`, "t-dim");
+    },
+    eddies(){ print("余额: <span class='t-ok'>€$ 128,450</span>  (刚付完维克的义体分期，别问)", "t-sys"); },
+    clear(){ body.innerHTML = ""; },
+    burn(){
+      print("正在激活强尼协议...", "t-err");
+      const ov = document.getElementById('burn-overlay');
+      document.body.classList.add('burning');
+      ov.classList.add('on');
+      print(">>> 醒来吧，武士。我们有一座城市要烧。<<<", "t-cmd");
+      setTimeout(()=>{ ov.classList.remove('on'); document.body.classList.remove('burning'); print("协议已关闭。城市还在。", "t-dim"); }, 4000);
+    }
+  };
+  commands['sfm'] = () => print("强尼说: 这个指令不存在,武士。", "t-err");
+
+  input.addEventListener('keydown', e=>{
+    if(e.key !== 'Enter' || !input.value.trim()) return;
+    const raw = input.value.trim();
+    input.value = "";
+    print(`<span class="t-cmd">v@nightcity:~$</span> ${raw.replace(/</g,'&lt;')}`);
+    const cmd = raw.toLowerCase().split(' ')[0];
+    if(commands[cmd]) commands[cmd]();
+    else print(`未知指令: ${cmd} — 输入 <span class="t-cmd">help</span> 查看帮助`, "t-err");
+  });
+  // 点击终端聚焦输入框
+  document.querySelector('.term').addEventListener('click', ()=> input.focus());
+})();
+</script>
+</body>
+</html>

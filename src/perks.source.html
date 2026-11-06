@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>专长 · 夜之城个人终端</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<meta name="description" content="三条专长路线与解锁进度 —— 剩下的点数，点在刀刃上。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet"></noscript>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<!-- 特效层 -->
+<div class="fx-scanlines"></div>
+<div class="fx-crtbar"></div>
+<div class="fx-noise"></div>
+<div class="fx-vignette"></div>
+<div id="cursor-glow"></div>
+<div class="side-strip">NIGHT CITY // NC-77012 // PERSONAL TERMINAL OF V.</div>
+<div class="hud-corner tl"></div><div class="hud-corner tr"></div>
+<div class="hud-corner bl"></div><div class="hud-corner br"></div>
+<div id="relic-hud">RELIC 2.0 :: RUNTIME STABLE</div>
+
+<!-- ===================== 导航 ===================== -->
+<header id="nav">
+  <a class="nav-logo" href="index.html"><span class="box">V</span>瑞哥. TERMINAL</a>
+  <nav class="nav-links" id="nav-links">
+    <a href="attributes.html">属性</a>
+    <a href="cyberware.html">义体</a>
+    <a href="perks.html" class="active">专长</a>
+    <a href="braindance.html">超梦档案</a>
+    <a href="terminal.html">接入终端</a>
+    <a class="ext" href="https://project-dashboard-demo.app.workbuddy.host/?sharecode=5I4RS6HMRS&shareId=46b3ce8f7da348518862b93cd07c467c" target="_blank" rel="noopener">项目控制台</a>
+  </nav>
+  <div class="nav-eddies">€$ <b id="eddies">0</b></div>
+  <button id="nav-burger">MENU_</button>
+</header>
+
+<main>
+<!-- ===================== 页头 ===================== -->
+<div class="page-head reveal">
+  <div class="sec-tag">// 03. PERKS :: 专长树</div>
+  <h2 class="sec-title"><span class="glitch y" data-text="剩下的，点在刀刃上">剩下的，点在刀刃上</span></h2>
+  <p class="sec-sub">三条路线的解锁进度 · 黑冰协议还差 12 点，别催。</p>
+</div>
+
+<!-- ===================== 专长主区（独占一屏） ===================== -->
+<section id="perks" class="flex-fill">
+  <div class="perk-cols">
+    <div class="perk-col reveal" style="border-top:2px solid var(--cyan)">
+      <h3 style="color:var(--cyan)"><i></i>网络黑客</h3><span class="p-en">QUICKHACKING TREE</span>
+      <div class="perk max"><div class="node">MAX</div><div><div class="p-name">幽灵协议</div><div class="p-desc">远程入侵无需视线接触，同时保持RAM隐匿状态。</div></div></div>
+      <div class="perk max"><div class="node">MAX</div><div><div class="p-name">蔓延感染</div><div class="p-desc">对目标上传的快速黑客将自动传播至周围敌人。</div></div></div>
+      <div class="perk"><div class="node">3/5</div><div><div class="p-name">短路</div><div class="p-desc">对电子设备造成过载伤害，瘫痪炮塔与义体。</div></div></div>
+      <div class="perk"><div class="node">2/3</div><div><div class="p-name">mass 漏洞</div><div class="p-desc">同时上传多个快速黑客，锁定时间大幅缩短。</div></div></div>
+      <div class="perk locked"><div class="node">—</div><div><div class="p-name">黑冰协议</div><div class="p-desc">需要智力 20 + 专长点 ×12 解锁。</div></div></div>
+    </div>
+    <div class="perk-col reveal" style="border-top:2px solid var(--red)">
+      <h3 style="color:var(--red)"><i></i>刀剑流</h3><span class="p-en">BLADES TREE</span>
+      <div class="perk max"><div class="node">MAX</div><div><div class="p-name">螳螂刀·穿刺</div><div class="p-desc">跳劈穿透敌人护甲，造成出血效果。</div></div></div>
+      <div class="perk"><div class="node">2/3</div><div><div class="p-name">格挡反击</div><div class="p-desc">完美格挡后自动触发致命反击。</div></div></div>
+      <div class="perk"><div class="node">1/2</div><div><div class="p-name">残影斩</div><div class="p-desc">冲刺状态下挥刀留下残影，附带位移。</div></div></div>
+      <div class="perk locked"><div class="node">—</div><div><div class="p-name">刽子手</div><div class="p-desc">需要反应 20 解锁终极刀技。</div></div></div>
+    </div>
+    <div class="perk-col reveal" style="border-top:2px solid var(--orange)">
+      <h3 style="color:var(--orange)"><i></i>工程</h3><span class="p-en">ENGINEERING TREE</span>
+      <div class="perk"><div class="node">2/3</div><div><div class="p-name">手雷改造</div><div class="p-desc">自制手雷附加电磁脉冲效果。</div></div></div>
+      <div class="perk"><div class="node">1/3</div><div><div class="p-name">弹药回收</div><div class="p-desc">击杀后自动回收部分弹壳并重组弹药。</div></div></div>
+      <div class="perk max"><div class="node">MAX</div><div><div class="p-name">蹂躏护甲</div><div class="p-desc">对装甲目标伤害 +30%，可破坏重装义体。</div></div></div>
+      <div class="perk locked"><div class="node">—</div><div><div class="p-name">终极改造</div><div class="p-desc">需要技术能力 20 解锁。</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 页脚薄条 ===================== -->
+<footer class="foot-bar">
+  <div class="corps">
+    <span class="corp">荒坂 ARASAKA</span>
+    <span class="corp">军用科技 MILITECH</span>
+    <span class="corp">生物技术 BIOTECHNICA</span>
+    <span class="corp">康陶 KANG TAO</span>
+    <span class="corp">创伤小组 TRAUMA TEAM</span>
+  </div>
+  <div class="ncpd-line">NCPD: 本终端为个人非商业用途 · 未经授权接入将触发防御网格 · ICE 已就绪</div>
+  <div class="foot-status">V. TERMINAL © 2077 · <span class="on">● ONLINE</span></div>
+</footer>
+</main>
+
+<script src="assets/config.js"></script>
+<script src="assets/common.js"></script>
+</body>
+</html>

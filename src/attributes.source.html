@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>属性 · 夜之城个人终端</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<meta name="description" content="五维属性面板与下属技能 —— 数值即话语权。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet"></noscript>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<!-- 特效层 -->
+<div class="fx-scanlines"></div>
+<div class="fx-crtbar"></div>
+<div class="fx-noise"></div>
+<div class="fx-vignette"></div>
+<div id="cursor-glow"></div>
+<div class="side-strip">NIGHT CITY // NC-77012 // PERSONAL TERMINAL OF V.</div>
+<div class="hud-corner tl"></div><div class="hud-corner tr"></div>
+<div class="hud-corner bl"></div><div class="hud-corner br"></div>
+<div id="relic-hud">RELIC 2.0 :: RUNTIME STABLE</div>
+
+<!-- ===================== 导航 ===================== -->
+<header id="nav">
+  <a class="nav-logo" href="index.html"><span class="box">V</span>瑞哥. TERMINAL</a>
+  <nav class="nav-links" id="nav-links">
+    <a href="attributes.html" class="active">属性</a>
+    <a href="cyberware.html">义体</a>
+    <a href="perks.html">专长</a>
+    <a href="braindance.html">超梦档案</a>
+    <a href="terminal.html">接入终端</a>
+    <a class="ext" href="https://project-dashboard-demo.app.workbuddy.host/?sharecode=5I4RS6HMRS&shareId=46b3ce8f7da348518862b93cd07c467c" target="_blank" rel="noopener">项目控制台</a>
+  </nav>
+  <div class="nav-eddies">€$ <b id="eddies">0</b></div>
+  <button id="nav-burger">MENU_</button>
+</header>
+
+<main>
+<!-- ===================== 页头 ===================== -->
+<div class="page-head reveal">
+  <div class="sec-tag">// 01. BODY STATS :: 属性面板</div>
+  <h2 class="sec-title"><span class="glitch y" data-text="这具身体，有几个上限">这具身体，有几个上限</span></h2>
+  <p class="sec-sub">五维属性与下属技能 · 数值即话语权 —— 智力已经顶格，别问代价。</p>
+</div>
+
+<!-- ===================== 属性主区（独占一屏） ===================== -->
+<section id="attributes" class="flex-fill">
+  <div class="attr-grid">
+    <div class="attr-card cut reveal">
+      <span class="ic" style="color:var(--red)">💀</span>
+      <h3>体格</h3><span class="en">BODY</span>
+      <div class="attr-level">16<small> /20</small></div>
+      <div class="bar"><i class="c1" data-w="80%"></i></div>
+      <div class="attr-skills"><span>斗殴 <em>12</em></span><span>运动 <em>14</em></span><span>霰弹枪 <em>9</em></span></div>
+    </div>
+    <div class="attr-card cut reveal">
+      <span class="ic" style="color:var(--green)">⚡</span>
+      <h3>反应</h3><span class="en">REFLEXES</span>
+      <div class="attr-level">18<small> /20</small></div>
+      <div class="bar"><i class="c2" data-w="90%"></i></div>
+      <div class="attr-skills"><span>刀剑·螳螂刀 <em>17</em></span><span>步枪 <em>15</em></span><span>潜行 <em>12</em></span></div>
+    </div>
+    <div class="attr-card cut reveal">
+      <span class="ic" style="color:var(--orange)">🔧</span>
+      <h3>技术能力</h3><span class="en">TECHNICAL ABILITY</span>
+      <div class="attr-level">17<small> /20</small></div>
+      <div class="bar"><i class="c3" data-w="85%"></i></div>
+      <div class="attr-skills"><span>制作 <em>18</em></span><span>工程 <em>13</em></span><span>蹂躏护甲 <em>11</em></span></div>
+    </div>
+    <div class="attr-card cut reveal">
+      <span class="ic" style="color:var(--cyan)">🌐</span>
+      <h3>智力</h3><span class="en">INTELLIGENCE</span>
+      <div class="attr-level">20<small> /20</small></div>
+      <div class="bar"><i class="c4" data-w="100%"></i></div>
+      <div class="attr-skills"><span>入侵协议 <em>20</em></span><span>快速黑客 <em>19</em></span><span>无人机 <em>10</em></span></div>
+    </div>
+    <div class="attr-card cut reveal">
+      <span class="ic" style="color:var(--purple)">🎯</span>
+      <h3>冷酷</h3><span class="en">COOL</span>
+      <div class="attr-level">15<small> /20</small></div>
+      <div class="bar"><i class="c5" data-w="75%"></i></div>
+      <div class="attr-skills"><span>潜行狙击 <em>14</em></span><span>谈判 <em>12</em></span><span>生存意志 <em>10</em></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 页脚薄条 ===================== -->
+<footer class="foot-bar">
+  <div class="corps">
+    <span class="corp">荒坂 ARASAKA</span>
+    <span class="corp">军用科技 MILITECH</span>
+    <span class="corp">生物技术 BIOTECHNICA</span>
+    <span class="corp">康陶 KANG TAO</span>
+    <span class="corp">创伤小组 TRAUMA TEAM</span>
+  </div>
+  <div class="ncpd-line">NCPD: 本终端为个人非商业用途 · 未经授权接入将触发防御网格 · ICE 已就绪</div>
+  <div class="foot-status">V. TERMINAL © 2077 · <span class="on">● ONLINE</span></div>
+</footer>
+</main>
+
+<script src="assets/config.js"></script>
+<script src="assets/common.js"></script>
+</body>
+</html>

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>超梦档案 · 夜之城个人终端</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<meta name="description" content="六段脑内录像带 —— 技术碎片、恶土见闻与夜之城生存指南，全息投影回放。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet"></noscript>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<!-- 特效层 -->
+<div class="fx-scanlines"></div>
+<div class="fx-crtbar"></div>
+<div class="fx-noise"></div>
+<div class="fx-vignette"></div>
+<div id="cursor-glow"></div>
+<div class="side-strip">NIGHT CITY // NC-77012 // PERSONAL TERMINAL OF V.</div>
+<div class="hud-corner tl"></div><div class="hud-corner tr"></div>
+<div class="hud-corner bl"></div><div class="hud-corner br"></div>
+<div id="relic-hud">RELIC 2.0 :: RUNTIME STABLE</div>
+
+<!-- ===================== 导航 ===================== -->
+<header id="nav">
+  <a class="nav-logo" href="index.html"><span class="box">V</span>瑞哥. TERMINAL</a>
+  <nav class="nav-links" id="nav-links">
+    <a href="attributes.html">属性</a>
+    <a href="cyberware.html">义体</a>
+    <a href="perks.html">专长</a>
+    <a href="braindance.html" class="active">超梦档案</a>
+    <a href="terminal.html">接入终端</a>
+    <a class="ext" href="https://project-dashboard-demo.app.workbuddy.host/?sharecode=5I4RS6HMRS&shareId=46b3ce8f7da348518862b93cd07c467c" target="_blank" rel="noopener">项目控制台</a>
+  </nav>
+  <div class="nav-eddies">€$ <b id="eddies">0</b></div>
+  <button id="nav-burger">MENU_</button>
+</header>
+
+<main>
+<!-- ===================== 页头 ===================== -->
+<div class="page-head reveal">
+  <div class="sec-tag">// 04. BRAINDANCE ARCHIVES :: 超梦档案</div>
+  <h2 class="sec-title"><span class="glitch y" data-text="我的脑内录像带">我的脑内录像带</span></h2>
+  <p class="sec-sub">技术碎片、恶土见闻与夜之城生存指南。每一段都是一次真实经历的复盘，欢迎接入回放。</p>
+</div>
+
+<!-- ===================== 超梦网格（弹性主区 3×2） ===================== -->
+<section id="braindance" class="flex-fill">
+  <div class="bd-grid" id="bd-grid"></div>
+</section>
+
+<!-- ===================== 页脚薄条 ===================== -->
+<footer class="foot-bar">
+  <div class="corps">
+    <span class="corp">荒坂 ARASAKA</span>
+    <span class="corp">军用科技 MILITECH</span>
+    <span class="corp">生物技术 BIOTECHNICA</span>
+    <span class="corp">康陶 KANG TAO</span>
+    <span class="corp">创伤小组 TRAUMA TEAM</span>
+  </div>
+  <div class="ncpd-line">NCPD: 本终端为个人非商业用途 · 未经授权接入将触发防御网格 · ICE 已就绪</div>
+  <div class="foot-status">V. TERMINAL © 2077 · <span class="on">● ONLINE</span></div>
+</footer>
+</main>
+
+<!-- 超梦回放 · 全息投影播放器 -->
+<div id="bd-player">
+  <div class="bd-stage">
+    <div class="bd-hud-top">
+      <span class="bd-rec"><i></i><span id="bd-hud-label">BD-CHIP 回放中 // --.BD</span></span>
+      <button class="bd-close" id="bd-close">✕ 中断投影</button>
+    </div>
+    <div class="bd-beam"></div>
+    <div class="bd-floor"></div>
+    <div class="bd-frame">
+      <div class="bd-screen">
+        <div id="bd-player-mount"></div>
+        <div class="bd-fx-scan"></div>
+        <div class="bd-fx-glow"></div>
+        <div class="bd-fx-line"></div>
+      </div>
+    </div>
+    <div class="bd-collapse"></div>
+    <div class="bd-end-flash" id="bd-end-flash">
+      <span class="t1">SIGNAL LOST</span>
+      <span class="t2">// PROJECTION TERMINATED · 投影已断开</span>
+    </div>
+    <div class="bd-hud-bottom">
+      <button class="bd-ctl" id="bd-playpause" title="播放 / 暂停">❚❚</button>
+      <span id="bd-time">00:00 / 01:01</span>
+      <span class="bd-prog"><i id="bd-prog"></i></span>
+      <button class="bd-ctl" id="bd-mute" title="声音开关">♪</button>
+      <button class="bd-endbtn" id="bd-endbtn">[ 结束投影 ]</button>
+    </div>
+  </div>
+</div>
+
+<script src="assets/config.js"></script>
+<script src="assets/common.js"></script>
+<script>
+/* ============================================================
+   博客卡片渲染
+   ============================================================ */
+(function(){
+  const grid = document.getElementById('bd-grid');
+  grid.innerHTML = CONFIG.posts.map(p=>`
+    <article class="bd-card cut-sm reveal">
+      <div class="bd-meta"><span class="tag"># ${p.tag}</span><span>${p.date}</span><span>${p.time} READ</span></div>
+      <h4>${p.title}</h4>
+      <p>${p.excerpt}</p>
+      <div class="bd-foot"><span>BD-CHIP // 已加密</span>${p.videoKey
+        ? `<a href="#" class="bd-playlink" data-key="${p.videoKey}">[ 接入回放 → ]</a>`
+        : '<a href="#" onclick="return false">[ 接入回放 → ]</a>'}</div>
+    </article>`).join('');
+  grid.querySelectorAll('.reveal').forEach(el=>{
+    new IntersectionObserver((es,obs)=>{es.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');obs.unobserve(x.target);}})},{threshold:.1}).observe(el);
+  });
+})();
+
+/* ============================================================
+   超梦回放 · 全息投影播放器
+   ============================================================ */
+(function(){
+  // 视频源注册表：把视频文件按命名放进 assets/ 即自动生效（页面会探测文件是否存在）
+  const BD_SOURCES = {
+    quickhack : { src:'assets/bd-quickhack.mp4', label:'QUICKHACK_ICE_BREAK'   },  // 快速黑客
+    cyberware : { src:'assets/bd-cyberware.mp4', label:'CYBERWARE_DIAGNOSTIC'  },  // 义体改造
+    frontend  : { src:'assets/bd-frontend.mp4',  label:'HUD_SPEC_V2'           },  // 前端工程
+    badlands  : { src:'assets/bd-badlands.mp4',  label:'BADLANDS_ROADTRIP'     },  // 恶土见闻
+    tower     : { src:'assets/bd-tower.mp4',     label:'TOWER_EVENING_WIND'    },  // 高塔晚风
+    afterlife : { src:'assets/bd-afterlife.mp4', label:'AFTERLIFE_BAR_STORIES' }   // 来世酒吧
+  };
+  const player = document.getElementById('bd-player');
+  const mount  = document.getElementById('bd-player-mount');
+  const timeEl = document.getElementById('bd-time');
+  const progEl = document.getElementById('bd-prog');
+  const ppBtn  = document.getElementById('bd-playpause');
+  const muteBtn= document.getElementById('bd-mute');
+  const label  = document.getElementById('bd-hud-label');
+  const frame  = document.querySelector('.bd-frame');
+  let vid = null, wiping = false, currentKey = null;
+
+  const pad = n => String(Math.floor(n)).padStart(2, '0');
+  const fmt = s => (isFinite(s) && s >= 0) ? pad(s / 60) + ':' + pad(s % 60) : '--:--';
+
+  function open(key){
+    if(player.classList.contains('open')) return;
+    const bd = BD_SOURCES[key];
+    if(!bd) return;
+    currentKey = key;
+    wiping = false;
+    player.classList.add('open');
+    player.classList.remove('ending');
+    document.body.classList.add('bd-open');
+    label.textContent = 'BD-CHIP 回放中 // ' + bd.label + '.BD';
+
+    vid = document.createElement('video');
+    vid.src = bd.src;
+    vid.preload = 'auto';
+    vid.controls = false;                 // 用自家 HUD，不显示浏览器控件
+    vid.playsInline = true;
+    vid.setAttribute('playsinline', '');
+    vid.setAttribute('webkit-playsinline', '');
+    mount.innerHTML = '';
+    mount.appendChild(vid);
+
+    vid.addEventListener('loadedmetadata', ()=>{
+      if(!vid) return;
+      timeEl.textContent = '00:00 / ' + fmt(vid.duration);
+    });
+    vid.addEventListener('timeupdate', ()=>{
+      if(!vid) return;                       // 播放器已关闭则忽略残留回调
+      const d = vid.duration || 0;
+      if(d > 0){
+        progEl.style.right = (100 - Math.min(vid.currentTime / d, 1) * 100) + '%';
+        timeEl.textContent = fmt(vid.currentTime) + ' / ' + fmt(d);
+      }
+    });
+    vid.addEventListener('ended', end);          // 真实播放结束 → 触发结束投影
+    vid.addEventListener('play',  ()=> setPP(true));
+    vid.addEventListener('pause', ()=> setPP(false));
+    vid.addEventListener('waiting', ()=> setPP(null));   // 缓冲中
+    vid.addEventListener('canplay', ()=>{ if(vid) setPP(!vid.paused); });
+    vid.addEventListener('error', ()=>{
+      setPP(false);
+      timeEl.textContent = '信号丢失';
+      toast('// 视频加载失败 · 请确认 ' + (BD_SOURCES[currentKey]?.src || '视频文件') + ' 存在');
+    });
+
+    timeEl.textContent = '00:00 / --:--';
+    progEl.style.right = '100%';
+    setPP(true);
+
+    // 在点击手势内调用 play() → 浏览器允许带声音自动播放
+    const p = vid.play();
+    if(p && p.catch) p.catch(()=> setPP(false));
+  }
+
+  function setPP(playing){
+    ppBtn.textContent = (playing === null) ? '···' : (playing ? '❚❚' : '▶');
+  }
+  function toggle(){
+    if(!vid) return;
+    if(vid.paused) { const p = vid.play(); if(p && p.catch) p.catch(()=>{}); }
+    else vid.pause();
+  }
+  function toggleMute(){
+    if(!vid) return;
+    vid.muted = !vid.muted;
+    muteBtn.textContent = vid.muted ? '✕' : '♪';
+  }
+
+  // 结束投影：全息幕布故障撕裂 → 纵向塌缩成一条光带 → 信号丢失 → 关闭
+  function end(){
+    if(wiping) return;
+    wiping = true;
+    const d = (vid && isFinite(vid.duration)) ? vid.duration : 0;
+    if(vid){ try{ vid.pause(); }catch(err){} }
+    progEl.style.right = '0%';
+    if(d > 0) timeEl.textContent = fmt(d) + ' / ' + fmt(d);
+    player.classList.add('ending');
+    setTimeout(()=>{
+      player.classList.remove('open');
+      player.classList.remove('ending');
+      mount.innerHTML = '';                    // 移除 video，彻底停止播放
+      vid = null;
+      document.body.classList.remove('bd-open');
+      toast('// BD-CHIP 回放结束 · 全息投影已断开');
+    }, 1560);
+  }
+
+  // 手动中断：不做结束特效，直接收场
+  function close(){
+    if(!player.classList.contains('open')) return;
+    wiping = true;
+    if(vid){ try{ vid.pause(); }catch(err){} }
+    player.classList.remove('open');
+    player.classList.remove('ending');
+    mount.innerHTML = '';
+    vid = null;
+    document.body.classList.remove('bd-open');
+  }
+
+  function toast(msg){
+    const t = document.createElement('div');
+    t.className = 'bd-toast';
+    t.textContent = msg;
+    document.body.appendChild(t);
+    requestAnimationFrame(()=> t.classList.add('show'));
+    setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=> t.remove(), 400); }, 3200);
+  }
+
+  document.addEventListener('click', e=>{
+    const a = e.target.closest('.bd-playlink');
+    if(!a) return;
+    e.preventDefault();                              // 阻止 href="#" 跳回页顶
+    if(!a.classList.contains('ready')) return;       // 视频未就位 → 不可点
+    open(a.dataset.key);
+  });
+  document.getElementById('bd-close').addEventListener('click', close);
+  document.getElementById('bd-endbtn').addEventListener('click', end);
+  ppBtn.addEventListener('click', toggle);
+  muteBtn.addEventListener('click', toggleMute);
+  document.getElementById('bd-playpause').addEventListener('click', e=> e.stopPropagation());
+  document.getElementById('bd-mute').addEventListener('click', e=> e.stopPropagation());
+  frame.addEventListener('click', toggle);           // 点画面 = 播放 / 暂停
+  player.addEventListener('click', e=>{ if(e.target === player) close(); });
+  document.addEventListener('keydown', e=>{
+    if(e.key === 'Escape' && player.classList.contains('open')) close();
+  });
+
+  // 视频就绪探测：确认文件真实存在才点亮「接入回放」，明确 404 的自动保持不可点
+  (async ()=>{
+    const links = document.querySelectorAll('.bd-playlink');
+    // 本地双击打开（file://）时浏览器禁止发请求，无法探测 → 一律放行，交给播放器自己兜底
+    const isLocalFile = location.protocol === 'file:';
+    for(const a of links){
+      const bd = BD_SOURCES[a.dataset.key];
+      if(!bd) continue;
+      if(isLocalFile){ a.classList.add('ready'); continue; }
+      try{
+        const r = await fetch(bd.src, { method: 'HEAD' });
+        // 只有明确「不存在」才锁住；405/403/500 等一律放行，避免误伤（个别静态服务器不支持 HEAD）
+        if(r.ok || (r.status !== 404 && r.status !== 410)) a.classList.add('ready');
+      }catch(err){
+        a.classList.add('ready');   // 探测本身失败（跨域/离线/file:）→ 放行
+      }
+    }
+  })();
+})();
+</script>
+</body>
+</html>

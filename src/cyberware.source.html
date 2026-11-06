@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>义体 · 夜之城个人终端</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<meta name="description" content="义体负载清单 —— 点击任意义体部件查看诊断详情。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet"></noscript>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<!-- 特效层 -->
+<div class="fx-scanlines"></div>
+<div class="fx-crtbar"></div>
+<div class="fx-noise"></div>
+<div class="fx-vignette"></div>
+<div id="cursor-glow"></div>
+<div class="side-strip">NIGHT CITY // NC-77012 // PERSONAL TERMINAL OF V.</div>
+<div class="hud-corner tl"></div><div class="hud-corner tr"></div>
+<div class="hud-corner bl"></div><div class="hud-corner br"></div>
+<div id="relic-hud">RELIC 2.0 :: RUNTIME STABLE</div>
+
+<!-- ===================== 导航 ===================== -->
+<header id="nav">
+  <a class="nav-logo" href="index.html"><span class="box">V</span>瑞哥. TERMINAL</a>
+  <nav class="nav-links" id="nav-links">
+    <a href="attributes.html">属性</a>
+    <a href="cyberware.html" class="active">义体</a>
+    <a href="perks.html">专长</a>
+    <a href="braindance.html">超梦档案</a>
+    <a href="terminal.html">接入终端</a>
+    <a class="ext" href="https://project-dashboard-demo.app.workbuddy.host/?sharecode=5I4RS6HMRS&shareId=46b3ce8f7da348518862b93cd07c467c" target="_blank" rel="noopener">项目控制台</a>
+  </nav>
+  <div class="nav-eddies">€$ <b id="eddies">0</b></div>
+  <button id="nav-burger">MENU_</button>
+</header>
+
+<main>
+<!-- ===================== 页头 ===================== -->
+<div class="page-head reveal">
+  <div class="sec-tag">// 02. CYBERWARE :: 义体负载</div>
+  <h2 class="sec-title"><span class="glitch y" data-text="能换的零件，都换了">能换的零件，都换了</span></h2>
+  <p class="sec-sub">义体医生的建议单 · 点击任意义体部件查看诊断详情。</p>
+</div>
+
+<!-- ===================== 义体主区（独占一屏） ===================== -->
+<section id="cyberware" class="flex-fill" style="display:flex;flex-direction:column">
+  <div class="cw-layout">
+    <div class="cw-visual reveal corner-brackets">
+      <img src="assets/cyberware-arm.jpg" alt="义体扫描">
+      <div class="scanline"></div>
+      <div class="hud">SCAN MODE<br>X-RAY v2.0<br><span style="color:var(--green)">● SYNC 100%</span></div>
+    </div>
+    <div class="cw-grid" id="cw-grid"></div>
+  </div>
+</section>
+
+<!-- ===================== 页脚薄条 ===================== -->
+<footer class="foot-bar">
+  <div class="corps">
+    <span class="corp">荒坂 ARASAKA</span>
+    <span class="corp">军用科技 MILITECH</span>
+    <span class="corp">生物技术 BIOTECHNICA</span>
+    <span class="corp">康陶 KANG TAO</span>
+    <span class="corp">创伤小组 TRAUMA TEAM</span>
+  </div>
+  <div class="ncpd-line">NCPD: 本终端为个人非商业用途 · 未经授权接入将触发防御网格 · ICE 已就绪</div>
+  <div class="foot-status">V. TERMINAL © 2077 · <span class="on">● ONLINE</span></div>
+</footer>
+</main>
+
+<!-- 义体详情弹窗 -->
+<div id="modal">
+  <div class="modal-box cut">
+    <button class="m-close" id="modal-close">✕</button>
+    <span class="cw-rarity" id="m-rarity"></span>
+    <h4 id="m-name"></h4>
+    <div class="m-en" id="m-en"></div>
+    <p class="m-desc" id="m-desc"></p>
+    <div class="m-rows" id="m-rows"></div>
+    <div class="m-warn" id="m-warn"></div>
+  </div>
+</div>
+
+<script src="assets/config.js"></script>
+<script src="assets/common.js"></script>
+<script>
+/* ============================================================
+   义体卡片渲染 + 弹窗
+   ============================================================ */
+(function(){
+  const grid = document.getElementById('cw-grid');
+  grid.innerHTML = CONFIG.cyberware.map((c,i)=>`
+    <article class="cw-card cut-sm reveal corner-brackets" data-i="${i}">
+      <div class="cw-slot"><span class="glyph">${c.icon}</span>${c.slot} // SLOT</div>
+      <h4>${c.name}</h4><span class="en">${c.en}</span>
+      <span class="cw-rarity ${c.rarity}">${c.rarityText}</span>
+      <div class="cw-stat">${c.rows.slice(0,2).map(r=>`${r[0]}: <b>${r[1]}</b>`).join('<br>')}</div>
+      <div class="cw-price"><span>${c.price}</span><span class="req">REQ ${c.req}</span></div>
+    </article>`).join('');
+
+  const modal = document.getElementById('modal');
+  grid.addEventListener('click', e=>{
+    const card = e.target.closest('.cw-card');
+    if(!card) return;
+    const c = CONFIG.cyberware[+card.dataset.i];
+    document.getElementById('m-rarity').className = 'cw-rarity ' + c.rarity;
+    document.getElementById('m-rarity').textContent = c.rarityText;
+    document.getElementById('m-name').textContent = c.name;
+    document.getElementById('m-en').textContent = c.en;
+    document.getElementById('m-desc').textContent = c.desc;
+    document.getElementById('m-rows').innerHTML = c.rows.map(r=>`<div><span>${r[0]}</span><b>${r[1]}</b></div>`).join('');
+    const warn = document.getElementById('m-warn');
+    warn.textContent = c.warn || "※ 该义体已通过临床兼容性认证 · 状态稳定";
+    warn.style.color = c.warn ? 'var(--red)' : 'var(--dim)';
+    warn.style.borderColor = c.warn ? 'rgba(255,0,60,.4)' : '#1c2830';
+    modal.classList.add('open');
+  });
+  document.getElementById('modal-close').onclick = ()=> modal.classList.remove('open');
+  modal.addEventListener('click', e=>{ if(e.target === modal) modal.classList.remove('open'); });
+  document.addEventListener('keydown', e=>{ if(e.key === 'Escape') modal.classList.remove('open'); });
+  // 新渲染的卡片也要进显现动画
+  grid.querySelectorAll('.reveal').forEach(el=>{
+    new IntersectionObserver((es,obs)=>{es.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');obs.unobserve(x.target);}})},{threshold:.1}).observe(el);
+  });
+})();
+</script>
+</body>
+</html>
